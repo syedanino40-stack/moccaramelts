@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Moccara Melts</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f5eff7; --surface:#fffdff; --ink:#2b1b33; --muted:#6f5c78; --line:#dccde3;
+  --amber:#e8912d; --amber-ink:#2a1500; --rose:#a8375f; --rose-ink:#fff;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#1c1120; --surface:#27192d; --ink:#f4ebf7; --muted:#b9a3c3; --line:#43304b;
+    --amber:#ffa94d; --amber-ink:#2a1500; --rose:#ff7aa5; --rose-ink:#2a0516;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#1c1120; --surface:#27192d; --ink:#f4ebf7; --muted:#b9a3c3; --line:#43304b;
+  --amber:#ffa94d; --amber-ink:#2a1500; --rose:#ff7aa5; --rose-ink:#2a0516;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:17px;line-height:1.45;padding-bottom:88px}
+main{max-width:600px;margin:0 auto;padding:20px 16px}
+.brand{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:4px}
+.logo{font-family:'Gloock',Georgia,'Times New Roman',serif;font-size:2rem;margin:0;line-height:1.1}
+.chip{background:var(--amber);color:var(--amber-ink);font-weight:700;border-radius:999px;padding:4px 12px;white-space:nowrap;font-size:.95rem}
+.tag{color:var(--muted);margin:0 0 20px}
+h2{font-family:'Gloock',Georgia,serif;font-weight:400;font-size:1.5rem;margin:0 0 4px}
+.lede{color:var(--muted);margin:0 0 16px}
+.view{display:none}
+.view.on{display:block}
+.item{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:12px 12px 12px 16px;margin-bottom:10px}
+.info{flex:1;min-width:0}
+.name{font-weight:700}
+.note{color:var(--muted);font-size:.92rem}
+.price{font-weight:500;margin-top:2px}
+.count{min-width:2.2ch;text-align:center;font-weight:700;font-size:1.3rem;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;border:0;border-radius:14px;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.add{background:var(--amber);color:var(--amber-ink);font-weight:700;width:54px;height:54px;font-size:1.8rem;line-height:1}
+.add:active{transform:scale(.94)}
+.sub{background:transparent;border:1.5px solid var(--line);width:38px;height:38px;font-size:1.3rem;color:var(--muted)}
+.sub:disabled{opacity:.35;cursor:default}
+.hero{background:var(--rose);color:var(--rose-ink);border-radius:24px;padding:20px;margin-bottom:8px}
+.hero .big{font-family:'Gloock',Georgia,serif;font-size:3rem;line-height:1.1;word-break:break-word}
+.split{display:flex;gap:10px;margin:10px 0 4px}
+.split div{flex:1;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:10px 14px}
+.split b{display:block;font-size:1.15rem}
+.split span{color:var(--muted);font-size:.92rem}
+.rows{margin:6px 0 4px}
+.rows div{display:flex;justify-content:space-between;gap:12px;padding:7px 2px;border-bottom:1px solid var(--line)}
+.rows span:last-child{font-variant-numeric:tabular-nums;text-align:right}
+.empty{color:var(--muted);padding:8px 2px}
+.actions{display:flex;gap:10px;margin:16px 0 6px;flex-wrap:wrap}
+.actions button{flex:1;min-width:140px;padding:12px 14px;border:1.5px solid var(--line);background:var(--surface);font-weight:700}
+.actions button.armed{background:var(--rose);color:var(--rose-ink);border-color:var(--rose)}
+.actions button:disabled{opacity:.4;cursor:default}
+h3{font-size:1.05rem;margin:22px 0 4px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1.5px solid var(--line);display:flex;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));gap:6px;z-index:5}
+nav a{flex:1;text-align:center;text-decoration:none;color:var(--muted);font-weight:700;padding:10px 6px;border-radius:12px}
+nav a[aria-current="page"]{background:var(--amber);color:var(--amber-ink)}
+@media (prefers-reduced-motion:reduce){.add:active{transform:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">
+    <h1 class="logo">Moccara Melts</h1>
+    <div class="chip" id="chip">Rs 0 today</div>
+  </div>
+  <p class="tag">Coffee and scented candles</p>
+
+  <section class="view" id="v-coffee">
+    <h2>Coffee</h2>
+    <p class="lede">Tap + when a cup is sold.</p>
+    <div id="list-coffee"></div>
+  </section>
+
+  <section class="view" id="v-candles">
+    <h2>Scented candles</h2>
+    <p class="lede">Hand-poured soy wax. Tap + when one is sold.</p>
+    <div id="list-candles"></div>
+  </section>
+
+  <section class="view" id="v-sales">
+    <div class="hero" aria-live="polite">
+      <div>Sales today</div>
+      <div class="big" id="total">Rs 0</div>
+      <div id="qty">0 items sold</div>
+    </div>
+    <div class="split">
+      <div><b id="s-coffee">Rs 0</b><span>Coffee</span></div>
+      <div><b id="s-candles">Rs 0</b><span>Candles</span></div>
+    </div>
+    <h3>Sold today</h3>
+    <div class="rows" id="breakdown"></div>
+    <div class="actions">
+      <button id="undo">Undo last sale</button>
+      <button id="reset">Clear today</button>
+    </div>
+    <h3>Recent days</h3>
+    <div class="rows" id="hist"></div>
+  </section>
+</main>
+
+<nav aria-label="Pages">
+  <a href="#coffee" data-v="coffee">Coffee</a>
+  <a href="#candles" data-v="candles">Candles</a>
+  <a href="#sales" data-v="sales">Sales</a>
+</nav>
+
+<script>
+(function(){
+  var ITEMS=[
+    {id:'espresso',cat:'coffee',name:'Espresso',note:'Double shot',price:350},
+    {id:'americano',cat:'coffee',name:'Americano',note:'Espresso, hot water',price:450},
+    {id:'flatwhite',cat:'coffee',name:'Flat white',note:'Velvety milk, double shot',price:550},
+    {id:'cappuccino',cat:'coffee',name:'Cappuccino',note:'Thick foam, dusted cocoa',price:550},
+    {id:'latte',cat:'coffee',name:'Latte',note:'Smooth and milky',price:600},
+    {id:'spanish',cat:'coffee',name:'Spanish latte',note:'Sweetened with condensed milk',price:700},
+    {id:'mocha',cat:'coffee',name:'Mocha',note:'Chocolate, espresso, steamed milk',price:700},
+    {id:'iced',cat:'coffee',name:'Iced latte',note:'Over ice, any syrup',price:650},
+    {id:'vanilla',cat:'candles',name:'Vanilla bean',note:'Warm vanilla, soft amber (180 g)',price:1200},
+    {id:'cardamom',cat:'candles',name:'Cardamom chai',note:'Spiced tea, brown sugar (180 g)',price:1500},
+    {id:'roseoud',cat:'candles',name:'Rose oud',note:'Damask rose, smoky oud (220 g)',price:1800},
+    {id:'beans',cat:'candles',name:'Roasted beans',note:'Fresh espresso, dark cocoa (180 g)',price:1400},
+    {id:'sandal',cat:'candles',name:'Sandalwood',note:'Creamy wood, light musk (220 g)',price:1900},
+    {id:'melts',cat:'candles',name:'Wax melt pack',note:'Six melts, mixed scents',price:800},
+    {id:'gift',cat:'candles',name:'Gift set',note:'Candle, melts and matches',price:3500}
+  ];
+  var BY={};ITEMS.forEach(function(i){BY[i.id]=i});
+  var PREFIX='moccara-melts:';
+  function pad(n){return n<10?'0'+n:''+n}
+  function dayKey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+  var today=dayKey(new Date());
+  var state={counts:{},log:[]};
+  function load(key){
+    try{var raw=localStorage.getItem(PREFIX+key);if(raw){var s=JSON.parse(raw);if(s&&s.counts&&s.log)return s}}catch(e){}
+    return null;
+  }
+  function save(){try{localStorage.setItem(PREFIX+today,JSON.stringify(state))}catch(e){}}
+  state=load(today)||state;
+  function rs(n){return 'Rs '+n.toLocaleString('en-PK')}
+  function totals(s){
+    var t={amt:0,qty:0,coffee:0,candles:0};
+    ITEMS.forEach(function(i){var c=s.counts[i.id]||0;t.qty+=c;t.amt+=c*i.price;t[i.cat]+=c*i.price});
+    return t;
+  }
+  function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+
+  ITEMS.forEach(function(m){
+    var row=el('div','item');
+    var info=el('div','info');
+    info.appendChild(el('div','name',m.name));
+    info.appendChild(el('div','note',m.note));
+    info.appendChild(el('div','price',rs(m.price)));
+    var sub=el('button','sub','\u2212');sub.setAttribute('aria-label','Remove one '+m.name);
+    var cnt=el('div','count','0');cnt.id='c-'+m.id;
+    var add=el('button','add','+');add.setAttribute('aria-label','Add one '+m.name);
+    sub.id='s-'+m.id;
+    add.onclick=function(){state.counts[m.id]=(state.counts[m.id]||0)+1;state.log.push(m.id);save();render()};
+    sub.onclick=function(){
+      if(!(state.counts[m.id]>0))return;
+      state.counts[m.id]--;
+      var i=state.log.lastIndexOf(m.id);if(i>-1)state.log.splice(i,1);
+      save();render();
+    };
+    [info,sub,cnt,add].forEach(function(x){row.appendChild(x)});
+    document.getElementById('list-'+m.cat).appendChild(row);
+  });
+
+  document.getElementById('undo').onclick=function(){
+    var id=state.log.pop();
+    if(id&&state.counts[id]>0)state.counts[id]--;
+    save();render();
+  };
+  var resetBtn=document.getElementById('reset'),armTimer=null;
+  function disarm(){clearTimeout(armTimer);resetBtn.classList.remove('armed');resetBtn.textContent='Clear today'}
+  resetBtn.onclick=function(){
+    if(!resetBtn.classList.contains('armed')){
+      resetBtn.classList.add('armed');resetBtn.textContent='Tap again to clear';
+      armTimer=setTimeout(disarm,3000);return;
+    }
+    state={counts:{},log:[]};save();disarm();render();
+  };
+
+  function row2(a,b){var d=el('div');d.appendChild(el('span',null,a));d.appendChild(el('span',null,b));return d}
+
+  function renderHistory(){
+    var rows=[];
+    try{
+      for(var i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i);
+        if(k&&k.indexOf(PREFIX)===0&&k!==PREFIX+today){
+          var s=load(k.slice(PREFIX.length));
+          if(s)rows.push({d:k.slice(PREFIX.length),t:totals(s)});
+        }
+      }
+    }catch(e){}
+    rows.sort(function(a,b){return a.d<b.d?1:-1});
+    var box=document.getElementById('hist');box.textContent='';
+    if(!rows.length){box.appendChild(el('div','empty','Past days appear here after your first full day.'));return}
+    rows.slice(0,7).forEach(function(r){
+      var p=r.d.split('-');
+      var label=new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+      box.appendChild(row2(label,rs(r.t.amt)+' \u00b7 '+r.t.qty+' sold'));
+    });
+  }
+
+  function render(){
+    var t=totals(state);
+    document.getElementById('chip').textContent=rs(t.amt)+' today';
+    document.getElementById('total').textContent=rs(t.amt);
+    document.getElementById('qty').textContent=t.qty+(t.qty===1?' item sold':' items sold');
+    document.getElementById('s-coffee').textContent=rs(t.coffee);
+    document.getElementById('s-candles').textContent=rs(t.candles);
+    var bd=document.getElementById('breakdown');bd.textContent='';
+    ITEMS.forEach(function(m){
+      var c=state.counts[m.id]||0;
+      document.getElementById('c-'+m.id).textContent=c;
+      document.getElementById('s-'+m.id).disabled=!(c>0);
+      if(c>0)bd.appendChild(row2(m.name+' \u00d7 '+c,rs(c*m.price)));
+    });
+    if(!t.qty)bd.appendChild(el('div','empty','No sales yet. Tap + on the Coffee or Candles page.'));
+    document.getElementById('undo').disabled=!state.log.length;
+  }
+
+  var VIEWS=['coffee','candles','sales'];
+  function route(){
+    var h=(location.hash||'').replace('#','');
+    if(VIEWS.indexOf(h)<0)h='coffee';
+    VIEWS.forEach(function(v){document.getElementById('v-'+v).classList.toggle('on',v===h)});
+    var links=document.querySelectorAll('nav a');
+    for(var i=0;i<links.length;i++){
+      if(links[i].getAttribute('data-v')===h)links[i].setAttribute('aria-current','page');
+      else links[i].removeAttribute('aria-current');
+    }
+    if(h==='sales')renderHistory();
+    window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange',route);
+  render();route();
+})();
+</script>
+</body>
+</html>
